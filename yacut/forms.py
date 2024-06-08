@@ -8,7 +8,7 @@ from .constants import SHORT_MAX_LENGTH
 class YacutForm(FlaskForm):
     original_link = URLField(
         'Длинная ссылка',
-        validators=[DataRequired(message='Обязательное поле'),]
+        validators=[DataRequired(message='Обязательное поле'), ]
     )
     custom_id = URLField(
         'Ваш вариант короткой ссылки',
