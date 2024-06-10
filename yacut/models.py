@@ -10,9 +10,3 @@ class URLMap(db.Model):
     short = db.Column(db.String(SHORT_MAX_LENGTH),
                       unique=True, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-
-    def from_dict(self, data):
-        if data['url']:
-            setattr(self, 'original', data['url'])
-        if data['custom_id']:
-            setattr(self, 'short', data['custom_id'])

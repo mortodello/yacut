@@ -1,7 +1,8 @@
 from flask import jsonify, request
+from http import HTTPStatus
 
 from . import app, db
-from .constants import SHORT_MAX_LENGTH
+from .constants import SHORT_MAX_LENGTH, URL
 from .error_handlers import InvalidAPIUsage
 from .models import URLMap
 from .validators import validate_symbols
@@ -12,12 +13,12 @@ from .views import get_unique_short_id
 def get_link(short_id):
     link = URLMap.query.filter_by(short=short_id).first()
     if not link:
-        raise InvalidAPIUsage('Указанный id не найден', 404)
-    return jsonify({'url': link.original}), 200
+        raise InvalidAPIUsage('Указанный id не найден', HTTPStatus.NOT_FOUND)
+    return jsonify({'url': link.original}), HTTPStatus.OK
 
 
 @app.route('/api/id/', methods=['POST'])
-def add_opinion():
+def post_link():
     try:
         data = request.get_json()
     except Exception:
@@ -32,9 +33,8 @@ def add_opinion():
     if URLMap.query.filter_by(short=data['custom_id']).first() is not None:
         raise InvalidAPIUsage(
             'Предложенный вариант короткой ссылки уже существует.')
-    link = URLMap()
-    link.from_dict(data)
+    link = URLMap(original=data['url'], short=data['custom_id'])
     db.session.add(link)
     db.session.commit()
     return jsonify({'url': link.original,
-                    'short_link': 'http://localhost/' + link.short}), 201
+                    'short_link': URL + link.short}), HTTPStatus.CREATED
