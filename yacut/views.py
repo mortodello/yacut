@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, url_for
+from flask import flash, redirect, render_template
 
 from random import randrange
 
@@ -33,11 +33,11 @@ def index_view():
         )
         db.session.add(link)
         db.session.commit()
-        return redirect(url_for('link_view', id=link.id))
+        return render_template('index.html', form=form, link=link)
     return render_template('index.html', form=form)
 
 
-@app.route('/links/<int:id>')
-def link_view(id):
-    link = URLMap.query.get_or_404(id)
-    return render_template('link.html', link=link)
+@app.route('/<string:short>')
+def link_view(short):
+    link = URLMap.query.filter_by(short=short).first_or_404()
+    return redirect(link.original)
