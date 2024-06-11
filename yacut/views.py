@@ -1,6 +1,6 @@
-from flask import flash, redirect, render_template
-
 from random import randrange
+
+from flask import flash, redirect, render_template
 
 from . import app, db
 from .constants import SHORT_LINK_SYMBOLS, SHORT_MIN_LEHGTH, RANGE_FOR_RANDOM
